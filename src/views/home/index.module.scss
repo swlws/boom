@@ -3,20 +3,21 @@
   background-color: #333;
 
   display: flex;
-  justify-content: center;
-  align-items: center;
-}
+  flex-direction: column;
 
-.row {
-  display: flex;
-}
+  > main {
+    flex: 1;
+    // padding: 10px;
+    margin: 10px;
+    background-color: #f5f6f7;
+  }
 
-.col {
-  width: 50px;
-  height: 50px;
-}
+  > footer {
+    padding: 10px;
+    margin: 10px auto;
 
-.map-item {
-  width: 50px;
-  height: 50px;
+    width: 50%;
+    height: 80px;
+    background-color: #f5f6f7;
+  }
 }
