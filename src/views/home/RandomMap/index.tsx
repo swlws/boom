@@ -63,11 +63,7 @@ function useBox(): [any, number, number] {
   return [ref, rows, cols];
 }
 
-function useMountDomEvent(
-  cols: number,
-  cfgs: MapNodeType[],
-  setCfg: (cfgs: MapNodeType[]) => void
-) {
+function useMountDomEvent(doBoom: (center: number) => void) {
   let cached_index = -1;
   const selectTarget = (e: any) => {
     cached_index = -1;
@@ -83,19 +79,33 @@ function useMountDomEvent(
       if (e.code !== "Space") return;
       if (cached_index === -1) return;
 
-      const aroundNotes = findAround(cached_index, cols);
-      handleEachNode(aroundNotes, cfgs, setCfg);
+      doBoom(cached_index);
     });
-  }, [cols, cached_index, cfgs, setCfg]);
+  }, [cached_index, doBoom]);
 
   return selectTarget;
 }
 
-type RandomMapProps = {};
+type RandomMapProps = { setCount: () => void };
 export default function RandomMap(props: RandomMapProps) {
   const [ref, rows, cols] = useBox();
   const [cfgs, setCfg] = useNodeConfig(rows, cols);
-  const selectTarget = useMountDomEvent(cols, cfgs, setCfg);
+  const selectTarget = useMountDomEvent(doBoom);
+
+  function doBoom(center: number) {
+    const aroundNotes = findAround(center, cols);
+    handleEachNode(aroundNotes, cfgs, setCfg);
+
+    props.setCount();
+
+    console.log(cfgs.map((item) => item.life));
+    for (let cfg of cfgs) {
+      if (cfg.life > 0) return;
+    }
+
+    alert("通关");
+    window.location.reload();
+  }
 
   const clickHandler = (e: any) => {
     const target = e.target;
@@ -103,8 +113,8 @@ export default function RandomMap(props: RandomMapProps) {
     if (!index) return;
 
     const n = parseInt(index, 10);
-    const aroundNotes = findAround(n, cols);
-    handleEachNode(aroundNotes, cfgs, setCfg);
+
+    doBoom(n);
   };
 
   const style = {

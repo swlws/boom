@@ -19,5 +19,13 @@
     width: 50%;
     height: 80px;
     background-color: #f5f6f7;
+
+    overflow: auto;
+
+    > aside {
+      float: right;
+      font-size: 3em;
+      color: green;
+    }
   }
 }
